@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-function WebsiteContentChecker() {
+function App() {
   const [htmlCode, setHtmlCode] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
@@ -63,4 +63,4 @@ function WebsiteContentChecker() {
   );
 }
 
-export default WebsiteContentChecker;
+export default App;
