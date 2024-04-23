@@ -7,15 +7,18 @@ function App() {
   const [dataArray, setArray] = useState([]);
 
   const checkHtmlContent = () => {
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = htmlCode;
-    const metaTitle = tempDiv.querySelector("title").innerText.trim();
-    const metaDescription = tempDiv
-      .querySelector('meta[name="description"]')
-      .content.trim();
-    const h1Tag = tempDiv.querySelector("h1").innerText.trim();
-
-    setArray([...dataArray, { url, metaTitle, metaDescription, h1Tag }]);
+    if (htmlCode) {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = htmlCode;
+      const metaTitle = tempDiv.querySelector("title").innerText.trim();
+      const metaDescription = tempDiv
+        .querySelector('meta[name="description"]')
+        .content.trim();
+      const h1Tag = tempDiv.querySelector("h1").innerText.trim();
+      setArray([...dataArray, { url, metaTitle, metaDescription, h1Tag }]);
+    }else{
+      setArray([...dataArray, { url, metaTitle:"", metaDescription:"", h1Tag:"" }]);
+    }
     setHtmlCode("");
     setUrl("");
   };
@@ -49,8 +52,8 @@ function App() {
       <div className="container">
         <label htmlFor="url">Url: </label>
         <input
-        style={{borderRadius:'4px',padding:'4px'}}
-        placeholder="Url"
+          style={{ borderRadius: "4px", padding: "4px" }}
+          placeholder="Url"
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -75,7 +78,10 @@ function App() {
           <div className="results-container" key={index}>
             <h2>Results:</h2>
             <div>
-              <p><strong>Url:</strong>{item.url}</p>
+              <p>
+                <strong>Url:</strong>
+                {item.url}
+              </p>
               <p>
                 <strong>Meta Title:</strong> {item.metaTitle}
               </p>
