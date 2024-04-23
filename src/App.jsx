@@ -5,7 +5,7 @@ function App() {
   const [htmlCode, setHtmlCode] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
-  const [h1Tag, setH1Tag] = useState([]);
+  const [h1Tag, setH1Tag] = useState("");
   const [pTags, setPTags] = useState([]);
 
   const checkHtmlContent = () => {
@@ -15,9 +15,7 @@ function App() {
     const metaDescription = tempDiv
       .querySelector('meta[name="description"]')
       .content.trim();
-    const h1Tag = Array.from(tempDiv.querySelectorAll("h1")).map((h1) =>
-      h1.innerText.trim()
-    );
+    const h1Tag = tempDiv.querySelector("h1").innerText.trim();
     const pTags = Array.from(tempDiv.querySelectorAll("p")).map((p) =>
       p.innerText.trim()
     );
@@ -40,6 +38,7 @@ function App() {
         onChange={(e) => setHtmlCode(e.target.value)}
       ></textarea>
       <br />
+      <br />
       <button className="button" onClick={checkHtmlContent}>
         Check Content
       </button>
@@ -48,14 +47,12 @@ function App() {
         <div>
           <strong>Meta Title:</strong> {metaTitle}
           <br />
+          <br />
           <strong>Meta Description:</strong> {metaDescription}
           <br />
-          <strong>H1 Tags:</strong>
-          <ul>
-            {h1Tag.map((hTag, index) => (
-              <li key={index}>{hTag}</li>
-            ))}
-          </ul>
+          <br />
+          <strong>H1 Tag:</strong> {h1Tag}
+          <br />
           <br />
           <strong>Paragraph Tags:</strong>
           <ul>
