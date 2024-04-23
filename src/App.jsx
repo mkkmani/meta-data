@@ -47,7 +47,10 @@ function App() {
   return (
     <div className="parent">
       <div className="container">
+        <label htmlFor="url">Url: </label>
         <input
+        style={{borderRadius:'4px',padding:'4px'}}
+        placeholder="Url"
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
