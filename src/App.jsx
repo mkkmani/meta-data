@@ -25,6 +25,8 @@ function App() {
     setUrl("");
   };
 
+  const api = 'https://metaserver-bp9j.onrender.com'
+
   const checkHtmlContent = async () => {
     const options = {
       method: "POST",
@@ -37,7 +39,7 @@ function App() {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/proxy", options);
+      const response = await fetch(`${api}/proxy`, options);
       const data = await response.json();
 
       if (!response.ok) {
