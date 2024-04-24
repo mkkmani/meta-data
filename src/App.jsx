@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [htmlCode, setHtmlCode] = useState("");
   const [url, setUrl] = useState("");
   const [dataArray, setArray] = useState([]);
 
-  const checkHtmlContent = () => {
+  const extractData = (htmlCode) => {
     if (htmlCode) {
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = htmlCode;
@@ -16,11 +15,39 @@ function App() {
         .content.trim();
       const h1Tag = tempDiv.querySelector("h1").innerText.trim();
       setArray([...dataArray, { url, metaTitle, metaDescription, h1Tag }]);
-    }else{
-      setArray([...dataArray, { url, metaTitle:"", metaDescription:"", h1Tag:"" }]);
+    } else {
+      setArray([
+        ...dataArray,
+        { url, metaTitle: "", metaDescription: "", h1Tag: "" },
+      ]);
     }
     setHtmlCode("");
     setUrl("");
+  };
+
+  const checkHtmlContent = async () => {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url,
+      }),
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/proxy", options);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      extractData(data.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const downloadAsCSV = () => {
@@ -50,22 +77,15 @@ function App() {
   return (
     <div className="parent">
       <div className="container">
-        <label htmlFor="url">Url: </label>
-        <input
-          style={{ borderRadius: "4px", padding: "4px" }}
-          placeholder="Url"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <textarea
-          className="textarea"
-          rows="10"
-          cols="50"
-          placeholder="Paste HTML document code here"
-          value={htmlCode}
-          onChange={(e) => setHtmlCode(e.target.value)}
-        ></textarea>
+        <div style={{display:'flex', flexDirection:'column', rowGap:'8px'}}>
+          <label htmlFor="url">Url: </label>
+          <input
+            placeholder="Url"
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
         <br />
         <br />
         <div style={{ display: "flex", justifyContent: "space-between" }}>

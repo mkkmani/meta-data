@@ -1,4 +1,7 @@
-
+input{
+    border-radius: 4px;
+    padding: 14px;
+}
 
 .container {
     width: 100%;
