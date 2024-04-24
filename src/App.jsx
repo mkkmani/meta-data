@@ -4,6 +4,8 @@ import "./App.css";
 function App() {
   const [url, setUrl] = useState("");
   const [dataArray, setArray] = useState([]);
+  const [isChecked, setChecked] = useState(false);
+  // const isChecked = false
 
   const extractData = (htmlCode) => {
     if (htmlCode) {
@@ -21,36 +23,49 @@ function App() {
         { url, metaTitle: "", metaDescription: "", h1Tag: "" },
       ]);
     }
-    setHtmlCode("");
     setUrl("");
   };
 
-  const api = 'https://metaserver-bp9j.onrender.com'
+  const api = "https://metaserver-bp9j.onrender.com";
 
   const checkHtmlContent = async () => {
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        url,
-      }),
+    if (!isChecked) {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url,
+        }),
+      };
+
+      try {
+        const response = await fetch(`${api}/proxy`, options);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return extractData(data.data);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+
+    const emptyArray = {
+      url,
+      metaTitle: "",
+      metaDescription: "",
+      h1Tag: "",
     };
 
-    try {
-      const response = await fetch(`${api}/proxy`, options);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      extractData(data.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    setArray([...dataArray, emptyArray]);
+    setUrl('')
   };
+
+  
 
   const downloadAsCSV = () => {
     const headers = ["Url", "Meta Title", "Meta Description", "H1 Tags"];
@@ -76,10 +91,13 @@ function App() {
     window.URL.revokeObjectURL(url);
   };
 
+
   return (
     <div className="parent">
       <div className="container">
-        <div style={{display:'flex', flexDirection:'column', rowGap:'8px'}}>
+        <div
+          style={{ display: "flex", flexDirection: "column", rowGap: "8px" }}
+        >
           <label htmlFor="url">Url: </label>
           <input
             placeholder="Url"
@@ -90,14 +108,29 @@ function App() {
         </div>
         <br />
         <br />
+        <div style={{ marginBottom: "8px" }}>
+          <input
+            id="checkbox"
+            onChange={(e)=>setChecked(e.target.checked)}
+            type="checkbox"
+          />
+          <label htmlFor="checkbox">Is Redirecting</label>
+        </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <button className="button" onClick={checkHtmlContent}>
+          <button className="button" onClick={checkHtmlContent} disabled={url===''}>
             Check Content
           </button>
           <button onClick={downloadAsCSV}>Download CSV</button>
         </div>
+        <div>
+          <h4>{`Count: ${dataArray.length}`}</h4>
+        </div>
         {dataArray.map((item, index) => (
-          <div className="results-container" key={index}>
+          <div
+            className="results-container"
+            style={{ border: "1px solid gray",borderRadius:'10px',padding:'8px' }}
+            key={index}
+          >
             <h2>Results:</h2>
             <div>
               <p>
