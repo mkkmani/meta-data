@@ -141,16 +141,13 @@ function App() {
                 <strong>Meta Title:</strong> {item.metaTitle}
               </p>
               <br />
-              <br />
               <p>
                 <strong>Meta Description:</strong> {item.metaDescription}
               </p>
               <br />
-              <br />
               <p>
                 <strong>H1 Tag:</strong> {item.h1Tag}
               </p>
-              <br />
               <br />
             </div>
           </div>
